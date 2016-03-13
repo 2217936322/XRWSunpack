@@ -91,7 +91,7 @@ void unpack(const char *file, const char *out_dir)
 	fread(files_names, 1, header.files_names_len, ifd);
 	
 	//create extention subdirectory
-	printf("Create %s\n", out_dir, point - file);
+	printf("Create %s %u %u\n", out_dir, point, file);
 	sprintf(dir, "%s/%s", out_dir, point - file);
 	mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	
