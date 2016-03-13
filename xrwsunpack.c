@@ -65,8 +65,9 @@ void unpack(const char *file, const char *out_dir)
 		terminate("No access to directory %s", out_dir);
 
 	//parse name of input file
-	name_start = strstr(file, PARSE_EXTENSIONS);
-	if(name_start != file)
+	name_start = strrchr(file, '/');
+	name_end = strstr(name_start, PARSE_EXTENSIONS);
+	if(name_end != name_start)
 		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
 	name_start += sizeof(PARSE_EXTENSIONS);
 	name_end = strrchr(name_start, '.');
