@@ -55,6 +55,10 @@ void unpack(const char *file, const char *out_dir)
 	
 	//read and check header
 	fread(&header, 1, sizeof(header), ifd);
+	header.ver = ntohl(header.ver);
+	header.files_number = ntohl(header.files_number);
+	header.files_names_len = ntohl(header.files_names_len);
+	header.files_size = ntohl(header.files_size);
 	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
