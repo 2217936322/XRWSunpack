@@ -127,10 +127,10 @@ void unpack(const char *file, const char *out_dir)
 	if(ftell(ifd) != (header.files_size - sizeof(header)))
 		terminate("File %s corrupted", file);
 	
-	sprintf(out_path, "%s/%s", out_path2, CONTENT_XML);
-	ofd = fopen(out_path, "wb");
-	if(ofd == NULL)
-		terminate("Cannot create file %s", out_path);
+//	sprintf(out_path, "%s/%s", out_path2, CONTENT_XML);
+//	ofd = fopen(out_path, "wb");
+//	if(ofd == NULL)
+//		terminate("Cannot create file %s", out_path);
 	
 //	while((len = fread(data, 1, MAXSIZE, ifd)) > 0)
 //		fwrite(data, 1, len, ofd);
