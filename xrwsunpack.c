@@ -70,7 +70,6 @@ void unpack(const char *file, const char *out_dir)
 	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, header.files_number, 4, ifd);
-	terminate("%u, %u", files_sizes[0], files_sizes[1]);
 	for(counter=0; counter++; counter<header.files_number)
 		files_sizes[counter] = htonl(files_sizes[counter]);
 	terminate("%u, %u", files_sizes[0], files_sizes[1]);
