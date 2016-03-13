@@ -40,7 +40,7 @@ void usage(char **argv)
 
 void unpack(const char *file, const char *out_dir)
 {
-	FILE *ifd, *ofd;
+	FILE *ifd;
 	struct header_struct {
 		char sig[4];
 		unsigned long ver;
@@ -48,7 +48,7 @@ void unpack(const char *file, const char *out_dir)
 		unsigned long files_names_len;
 		unsigned long files_size;
 	} header;
-	unsigned long *files_sizes, counter;
+	unsigned long *files_sizes;
 	char *files_names, *data, *point;
 	unsigned long read_size, len;
 	char dir[FILENAME_MAX], out_file[FILENAME_MAX];
@@ -82,7 +82,7 @@ void unpack(const char *file, const char *out_dir)
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, header.files_number, 4, ifd);
 	//convert integers
-	for(counter = 0; counter < header.files_number; counter++)
+	for(unsigned long counter = 0; counter < header.files_number; counter++)
 		files_sizes[counter] = ntohl(files_sizes[counter]);
 	
 	//read names of files
@@ -96,8 +96,9 @@ void unpack(const char *file, const char *out_dir)
 	
 	//create files
 	data = malloc(MAXSIZE);
-	for(counter = 0; counter < header.files_number; counter++)
+	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
+		FILE *ofd;
 		sprintf(out_file, "%s/%s/%s", out_dir, dir, files_names[couner]);
 		ofd = fopen(out_file, "wb");
 		if(ofd == NULL)
