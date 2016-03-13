@@ -54,7 +54,7 @@ void unpack(const char *file, const char *out_dir)
 	unsigned long read_size, len;
 	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
 	
-	if(out_dir != NULL && access(out_dir, W_OK) == -1)
+	if(out_dir != "" && access(out_dir, W_OK) == -1)
 		terminate("No access to directory %s", out_dir);
 	
 	if((point = strrchr(file, '.')) != NULL)
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 	if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
 		usage(argv);
 	else
-		unpack(argv[1], (argc > 2) ? argv[2] : NULL);
+		unpack(argv[1], (argc > 2) ? argv[2] : "");
 
 	return 0;
 }
