@@ -30,7 +30,8 @@ void usage(char **argv)
 {
 	fprintf(stderr, "%s\n", xrwsunpack_header);
 	fprintf(stderr, "Usage: %s [option] .dat_file [OUT_DIR]\n", argv[0]);
-	fprintf(stderr, "Unpack X Rebirth Workshop (XRWS) .dat files downloaded from Steam\n\n");
+	fprintf(stderr, "Unpack X Rebirth Workshop (XRWS) .dat files downloaded from Steam\n");
+	fprintf(stderr, "%s -h or --help for help\n\n");
 	fprintf(stderr, "Report bugs to <https://github.com/Lighting/XRWSunpack/issues>\n");
 }
 
@@ -39,22 +40,22 @@ void unpack(const char *file, const char *out_dir)
 	FILE *ifd;
 	struct header_struct {
 		char sig[4];
-		unsigned long ver;
-		unsigned long files_number;
-		unsigned long files_names_len;
-		unsigned long files_size;
+		unsigned int ver;
+		unsigned int files_number;
+		unsigned int files_names_len;
+		unsigned int files_size;
 	} header;
-	unsigned long *files_sizes;
+	unsigned int *files_sizes;
 	char *files_names;
 	
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
 	if(ifd == NULL)
-		terminate("Cannot open theme file %s", file);
+		terminate("Cannot open XRWS file %s", file);
 	
 	//read and check header
 	fread(&header, 1, sizeof(header), ifd);
-	if(strncmp(header.sig, XRWS_SIGNATURE, 4) != 0)
+	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
 		terminate("%s have unsupported XRWS version %d", file, header.ver);
@@ -80,7 +81,7 @@ int main(int argc, char **argv)
 	if(argc < 2)
 	{
 		usage(argv);
-		terminate("\nTheme file not found");
+		terminate("\nXRWS file not found");
 	}
 	
 	if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
