@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/stat.h>
 
 #define MAXSIZE 520000
 #define XRWS_SIGNATURE "XRWS"
