@@ -11,6 +11,6 @@ EXE=.exe
 
 all: $(PROG)
 
-pbtheme$(EXE): $(SRC)
+xrwsunpack(EXE): $(SRC)
 	$(CC) -g -o $@ $^ $(LDFLAGS) -lstdc++ 
 	$(STRIP) $@
