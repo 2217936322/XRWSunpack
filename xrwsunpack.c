@@ -98,13 +98,13 @@ void unpack(const char *file, const char *out_dir)
 	data = malloc(MAXSIZE);
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
+		printf("Create %s/%s/%s\n", out_dir, dir, files_names[counter]);
 		sprintf(out_file, "%s/%s/%s", out_dir, dir, files_names[counter]);
-		printf("Create %s\n", out_file);
 		ofd = fopen(out_file, "wb");
 		if(ofd == NULL)
 			terminate("Cannot open output file %s", files_names[counter]);
-		terminate("error");
-		while(read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd)) > 0)
+		
+		while((read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd))) > 0)
 		{
 			len = fread(data, 1, read_size, ifd);
 			fwrite(data, 1, len, ofd);
