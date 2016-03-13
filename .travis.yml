@@ -9,7 +9,6 @@ addons:
 install: make
 
 script:
-  - ./xrwsunpack
   - ./xrwsunpack -h
   - ./xrwsunpack --help
   - ./xrwsunpack ./test-env/test.dat
