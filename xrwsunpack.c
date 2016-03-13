@@ -92,7 +92,6 @@ void unpack(const char *file, const char *out_dir)
 	
 	//create extention subdirectory
 	strncpy(dir, file, point - file);
-	terminate("%s", dir);
 	mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	
 	//create files
@@ -100,6 +99,7 @@ void unpack(const char *file, const char *out_dir)
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
 		sprintf(out_file, "%s/%s/%s", out_dir, dir, files_names[counter]);
+		printf("Create %s\n", out_file);
 		ofd = fopen(out_file, "wb");
 		if(ofd == NULL)
 			terminate("Cannot open output file %s", files_names[counter]);
