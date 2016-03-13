@@ -132,8 +132,8 @@ void unpack(const char *file, const char *out_dir)
 	if(ofd == NULL)
 		terminate("Cannot create file %s", out_path);
 	
-	while((len = fread(data, 1, MAXSIZE, ifd)) > 0)
-		fwrite(data, 1, len, ofd);
+//	while((len = fread(data, 1, MAXSIZE, ifd)) > 0)
+//		fwrite(data, 1, len, ofd);
 
 	fclose(ofd);
 	printf("File %s created\n", out_path);
