@@ -38,11 +38,11 @@ void unpack(const char *file, const char *out_dir)
 {
 	FILE *ifd, *ofd;
 	struct header_struct {
-    char sig[4];
-    unsigned long ver;
-    unsigned long files_numder;
-    unsigned long files_names_len;
-    unsigned long files_size;
+		char sig[4];
+		unsigned long ver;
+		unsigned long files_numder;
+		unsigned long files_names_len;
+		unsigned long files_size;
 	} header;
 	unsigned long *files_sizes;
 	char *files_names, *data;
@@ -64,7 +64,7 @@ void unpack(const char *file, const char *out_dir)
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, 1, sizeof(files_sizes), ifd);
   
-  //read names of files
+	//read names of files
 	files_names = malloc(header.filename_len);
 	memset(files_names, 0, sizeof(files_names));
 	fread(files_names, 1, sizeof(files_names), ifd);
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 	}
 	
 	if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
-    usage(argv);
+		usage(argv);
 	else
 		unpack(argv[1], (argc > 2) ? argv[2] : "-");
 
