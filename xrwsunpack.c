@@ -130,7 +130,7 @@ int main(int argc, char **argv)
 	if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
 		usage(argv);
 	else
-		unpack(argv[1], (argc > 2) ? argv[2] : "");
+		unpack(argv[1], (argc > 2) ? argv[2] : NULL);
 
 	return 0;
 }
