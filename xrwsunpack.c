@@ -14,6 +14,7 @@
 #define MAXSIZE 520000
 #define XRWS_SIGNATURE "XRWS"
 #define XRWS_VERSION 1
+#define CONTENT_XML "content.xml"
 
 const char *xrwsunpack_header = "XRWSunpack v0.1 (" __DATE__ " " __TIME__ ")";
 
@@ -100,19 +101,17 @@ void unpack(const char *file, const char *out_dir)
 	if(mkdir(out_path2, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
 		printf("Create directory %s\n", out_path2);
 	else
-		terminate("Error creating directory %s", out_path2);
+		terminate("Connot create directory %s", out_path2);
 	
 	//create files
 	data = malloc(MAXSIZE);
 	files_names_pos = 0;
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
-		printf("%s %s\n", out_path2, files_names + files_names_pos);
-/*		sprintf(out_path, "%s/%s", out_path2, files_names[files_names_pos]);
-printf("Create file %s\n", out_path);
+		sprintf(out_path, "%s/%s", out_path2, files_names[files_names_pos]);
 		ofd = fopen(out_path, "wb");
 		if(ofd == NULL)
-			terminate("Cannot open output file %s", files_names[files_names_pos]);
+			terminate("Cannot create file %s", out_path);
 
 		while((read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd))) > 0)
 		{
@@ -122,8 +121,22 @@ printf("Create file %s\n", out_path);
 		
 		fclose(ofd);
 		printf("File %s unpacked\n", out_path);
-*/		files_names_pos += strlen(files_names + files_names_pos) + 1;
+		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
+	
+	sprintf(out_path, "%s/%s", out_path2, CONTENT_XML);
+	ofd = fopen(out_path, "wb");
+	if(ofd == NULL)
+		terminate("Cannot create file %s", out_path);
+	
+	while((read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd))) > 0)
+	{
+		len = fread(data, 1, read_size, ifd);
+		fwrite(data, 1, len, ofd);
+	}
+
+	fclose(ofd);
+	printf("File %s created\n", out_path);
 
 	fclose(ifd);
 	
