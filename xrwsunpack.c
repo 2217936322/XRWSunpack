@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <netinet/in.h>
 
 #define MAXSIZE 520000
 #define XRWS_SIGNATURE "XRWS"
