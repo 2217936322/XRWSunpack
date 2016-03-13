@@ -65,11 +65,12 @@ void unpack(const char *file, const char *out_dir)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
 		terminate("%s have unsupported XRWS version %d", file, header.ver);
+	
 	//read sizes of files
 	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
-	terminate("%d, %d", files_sizes[0], files_sizes[1]);
 	fread(files_sizes, header.files_number, 4, ifd);
+	terminate("%d, %d", files_sizes[0], files_sizes[1]);
 	for(counter=0; counter++; counter<header.files_number)
 		files_sizes[counter] = ntohl(files_sizes[counter]);
 	terminate("%d, %d", files_sizes[0], files_sizes[1]);
