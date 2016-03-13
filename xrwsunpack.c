@@ -51,10 +51,10 @@ void unpack(const char *file, const char *out_dir)
 	unsigned int *files_sizes;
 	char *files_names, *data, *point;
 	unsigned long read_size, len;
-	char dir[FILENAME_MAX], out_file[FILENAME_MAX];
+	char dir[FILENAME_MAX*2], out_file[FILENAME_MAX*2];
 	
 	if(out_dir != NULL && access(out_dir, W_OK) == -1)
-		terminate("No access to directory %s ", out_dir);
+		terminate("No access to directory %s", out_dir);
 	
 	if((point = strrchr(file, '.')) != NULL)
 		if(strcmp(point, ".dat") != 0)
@@ -91,7 +91,8 @@ void unpack(const char *file, const char *out_dir)
 	fread(files_names, 1, header.files_names_len, ifd);
 	
 	//create extention subdirectory
-	strncpy(dir, file, sizeof(dir));
+	strncpy(dir, file, point - file);
+	terminate("%s", dir);
 	mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	
 	//create files
