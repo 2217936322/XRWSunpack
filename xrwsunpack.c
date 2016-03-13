@@ -53,7 +53,7 @@ void unpack(const char *file, const char *out_dir)
 		terminate("Cannot open theme file %s", file);
 	
 	//read and check header
-	fread((char *)header, 1, sizeof(header), ifd);
+	fread(&header, 1, sizeof(header), ifd);
 	if(strncmp(header.sig, XRWS_SIGNATURE, 4) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
