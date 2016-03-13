@@ -40,14 +40,14 @@ void unpack(const char *file, const char *out_dir)
 	FILE *ifd;
 	struct header_struct {
 		char sig[4];
-		unsigned int ver;
-		unsigned int files_number;
-		unsigned int files_names_len;
-		unsigned int files_size;
+		int ver;
+		int files_number;
+		int files_names_len;
+		int files_size;
 	} header;
-	unsigned int *files_sizes;
+	int *files_sizes;
 	char *files_names;
-	unsigned int counter;
+	int counter;
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
