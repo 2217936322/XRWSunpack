@@ -32,12 +32,13 @@ void usage(char **argv)
 	fprintf(stderr, "Usage: %s [option] .dat_file [OUT_DIR]\n", argv[0]);
 	fprintf(stderr, "Unpack X Rebirth Workshop (XRWS) .dat files downloaded from Steam\n");
 	fprintf(stderr, "Type %s -h or --help for this help screen\n\n", argv[0]);
+	fprintf(stderr, "To download files from Steam Workshop use http://steamworkshopdownloader.com\n");
 	fprintf(stderr, "Report bugs to <https://github.com/Lighting/XRWSunpack/issues>\n");
 }
 
 void unpack(const char *file, const char *out_dir)
 {
-	FILE *ifd;
+	FILE *ifd, *ofd;
 	struct header_struct {
 		char sig[4];
 		unsigned int ver;
@@ -45,9 +46,13 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_names_len;
 		unsigned int files_size;
 	} header;
-	unsigned int *files_sizes;
-	char *files_names;
-	unsigned int counter;
+	unsigned int *files_sizes, counter;
+	char *files_names, *data, *point, *dir;
+	unsigned long read_size, len;
+	
+	if((point = strrchr(file, '.')) != NULL )
+		if(strcmp(point, ".dat") != 0)
+			terminate("File %s must contain .dat extension", file);
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
@@ -70,17 +75,40 @@ void unpack(const char *file, const char *out_dir)
 	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, header.files_number, 4, ifd);
+	//convert integers
 	for(counter = 0; counter < header.files_number; counter++)
 		files_sizes[counter] = ntohl(files_sizes[counter]);
-	terminate("%u, %u", files_sizes[0], files_sizes[1]);
- 
+	
 	//read names of files
 	files_names = malloc(header.files_names_len);
-	memset(files_names, 0, sizeof(files_names));
-	fread(files_names, 1, sizeof(files_names), ifd);
+	memset(files_names, 0, header.files_names_len);
+	fread(files_names, 1, header.files_names_len, ifd);
 	
+	//create extention subdirectory
+	dir = malloc(file - point);
+	strncpy(dir, file, sizeof(dir));
+	mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	
+	//create files
+	data = malloc(MAXSIZE);
+	for(counter = 0; counter < header.files_number; counter++)
+	{
+		ofd = fopen(out_dir + "/" + dir + "/" + files_names[couner], "wb");
+		if(ofd == NULL)
+			terminate("Cannot open output file %s", files_names[couner]);
+		
+		do {
+			read_size = (files_sizes[counter] - ftell(odf) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(odf));
+			len = fread(data, 1, read_size, ifd);
+			fwrite(data, 1, len, ofd);
+		} while(len);
+		
+		fclose(ofd);
+	}
+
 	fclose(ifd);
 	
+	free(data);
 	free(files_sizes);
 	free(files_names);
 }
