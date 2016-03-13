@@ -74,11 +74,13 @@ void unpack(const char *file, const char *out_dir)
 	if(name_end == NULL || strcmp(name_end, PARSE_DAT) != 0)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
 	strncpy(out_path, name_start, name_end - name_start);
+	printf("out_path %s", out_path);
 	name_end = strrchr(out_path, PARSE_VERSION_TOKEN);
+	printf("name_end %s", name_end);
 	if(name_end != NULL && name_end[1] == PARSE_VERSION)
 		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
 	strncpy(out_path2, out_path, name_end - out_path);
-	printf("%s", out_path2);
+	printf("out_path2 %s", out_path2);
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
