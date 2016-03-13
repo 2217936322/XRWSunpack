@@ -40,14 +40,14 @@ void unpack(const char *file, const char *out_dir)
 	FILE *ifd;
 	struct header_struct {
 		char sig[4];
-		int ver;
-		int files_number;
-		int files_names_len;
-		int files_size;
+		unsigned int ver;
+		unsigned int files_number;
+		unsigned int files_names_len;
+		unsigned int files_size;
 	} header;
-	int *files_sizes;
+	unsigned int *files_sizes;
 	char *files_names;
-	int counter;
+	unsigned int counter;
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
@@ -70,10 +70,10 @@ void unpack(const char *file, const char *out_dir)
 	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, header.files_number, 4, ifd);
-	terminate("%d, %d", files_sizes[0], files_sizes[1]);
-	for(counter=0; counter++; counter<header.files_number)
-		files_sizes[counter] = htonl(files_sizes[counter]);
-	terminate("%d, %d", files_sizes[0], files_sizes[1]);
+	terminate("%ud, %ud", files_sizes[0], files_sizes[1]);
+//	for(counter=0; counter++; counter<header.files_number)
+//		files_sizes[counter] = htonl(files_sizes[counter]);
+//	terminate("%d, %d", files_sizes[0], files_sizes[1]);
  
 	//read names of files
 	files_names = malloc(header.files_names_len);
