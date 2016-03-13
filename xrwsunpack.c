@@ -58,7 +58,7 @@ void unpack(const char *file, const char *out_dir)
 	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
-		terminate("%s have unsupported XRWS version %d", file, header.ver);
+		terminate("%s have unsupported XRWS version %d, %d, %d, %d", file, header.ver, header.files_number, header.files_names_len, header.files_size);
 	
 	//read sizes of files
 	files_sizes = malloc(header.files_number * 4);
