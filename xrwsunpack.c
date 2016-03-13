@@ -72,7 +72,7 @@ void unpack(const char *file, const char *out_dir)
 	fread(files_sizes, header.files_number, 4, ifd);
 	terminate("%d, %d", files_sizes[0], files_sizes[1]);
 	for(counter=0; counter++; counter<header.files_number)
-		files_sizes[counter] = ntohl(files_sizes[counter]);
+		files_sizes[counter] = ntohs(files_sizes[counter]);
 	terminate("%d, %d", files_sizes[0], files_sizes[1]);
  
 	//read names of files
