@@ -47,8 +47,7 @@ void unpack(const char *file, const char *out_dir)
 	} header;
 	unsigned int *files_sizes;
 	char *files_names;
-	unsigned int couter;
-	
+
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
 	if(ifd == NULL)
@@ -65,14 +64,14 @@ void unpack(const char *file, const char *out_dir)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
 		terminate("%s have unsupported XRWS version %d", file, header.ver);
-	terminate("%d, %d, %d, %d", header.ver, header.files_number, header.files_names_len, header.files_size);
 	//read sizes of files
 	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, 1, sizeof(files_sizes), ifd);
-//	while()
-//		files_sizes[] = ntohl(files_sizes[]);
-  
+	for (unsigned int i=0; i++; i<header.files_number)
+		files_sizes[i] = ntohl(files_sizes[i]);
+	terminate("%d, %d", files_sizes[0], files_sizes[1]);
+ 
 	//read names of files
 	files_names = malloc(header.files_names_len);
 	memset(files_names, 0, sizeof(files_names));
