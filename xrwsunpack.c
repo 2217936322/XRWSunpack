@@ -44,13 +44,13 @@ void unpack(const char *file, const char *out_dir)
 		unsigned long files_number;
 		unsigned long files_names_len;
 		unsigned long files_size;
-		void swap()
-		{
-			ver = ntohl(ver);
-			files_number = ntohl(files_number);
-			files_names_len = ntohl(files_names_len);
-			files_size = ntohl(files_size);
-		}
+//		void swap()
+//		{
+//			ver = ntohl(ver);
+//			files_number = ntohl(files_number);
+//			files_names_len = ntohl(files_names_len);
+//			files_size = ntohl(files_size);
+//		}
 	} header;
 	unsigned long *files_sizes;
 	char *files_names;
@@ -62,7 +62,7 @@ void unpack(const char *file, const char *out_dir)
 	
 	//read and check header
 	fread(&header, 1, sizeof(header), ifd);
-	header.swap();
+//	header.swap();
 	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
