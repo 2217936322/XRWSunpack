@@ -40,7 +40,7 @@ void usage(char **argv)
 
 void unpack(const char *file, const char *out_dir)
 {
-	FILE *ifd;
+	FILE *ifd, *ofd;
 	struct header_struct {
 		char sig[4];
 		unsigned long ver;
@@ -98,14 +98,13 @@ void unpack(const char *file, const char *out_dir)
 	data = malloc(MAXSIZE);
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
-		FILE *ofd;
-		sprintf(out_file, "%s/%s/%s", out_dir, dir, files_names[couner]);
+		sprintf(out_file, "%s/%s/%s", out_dir, dir, files_names[counter]);
 		ofd = fopen(out_file, "wb");
 		if(ofd == NULL)
-			terminate("Cannot open output file %s", files_names[couner]);
+			terminate("Cannot open output file %s", files_names[counter]);
 		
 		do {
-			read_size = (files_sizes[counter] - ftell(odf) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(odf));
+			read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd));
 			len = fread(data, 1, read_size, ifd);
 			fwrite(data, 1, len, ofd);
 		} while(len);
