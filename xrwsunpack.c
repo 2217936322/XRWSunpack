@@ -96,6 +96,7 @@ void unpack(const char *file, const char *out_dir)
 	
 	//create files
 	data = malloc(MAXSIZE);
+	terminate("error");
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
 		sprintf(out_file, "%s/%s/%s", out_dir, dir, files_names[counter]);
