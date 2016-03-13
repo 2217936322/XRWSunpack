@@ -64,16 +64,16 @@ void unpack(const char *file, const char *out_dir)
 	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
-		terminate("%s have unsupported XRWS version %d", file, header.ver);
+		terminate("%s have unsupported XRWS version %u", file, header.ver);
 	
 	//read sizes of files
 	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, header.files_number, 4, ifd);
-	terminate("%ud, %ud", files_sizes[0], files_sizes[1]);
-//	for(counter=0; counter++; counter<header.files_number)
-//		files_sizes[counter] = htonl(files_sizes[counter]);
-//	terminate("%d, %d", files_sizes[0], files_sizes[1]);
+	terminate("%u, %u", files_sizes[0], files_sizes[1]);
+	for(counter=0; counter++; counter<header.files_number)
+		files_sizes[counter] = htonl(files_sizes[counter]);
+	terminate("%u, %u", files_sizes[0], files_sizes[1]);
  
 	//read names of files
 	files_names = malloc(header.files_names_len);
