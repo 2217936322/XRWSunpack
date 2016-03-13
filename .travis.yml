@@ -13,3 +13,4 @@ script:
   - ./xrwsunpack --help
   - ./xrwsunpack ./test-env/test.dat
   - ls -l
+  - ls -l ./test-env/test
