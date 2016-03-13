@@ -124,7 +124,8 @@ void unpack(const char *file, const char *out_dir)
 		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
 	
-	if(ftell(ifd) != (header.files_size - sizeof(header)))
+	printf("%d %d\n", ftell(ifd), header.files_size + sizeof(header));
+	if(ftell(ifd) != (header.files_size + sizeof(header)))
 		terminate("File %s corrupted", file);
 	
 	sprintf(out_path, "%s/%s", out_path2, CONTENT_XML);
