@@ -38,21 +38,21 @@ void usage(char **argv)
 void unpack(const char *file, const char *out_dir)
 {
 	FILE *ifd;
-	struct header_struct {
+	typedef struct header_struct {
 		char sig[4];
 		unsigned int ver;
 		unsigned int files_number;
 		unsigned int files_names_len;
 		unsigned int files_size;
-//		void swap()
-//		{
-//			ver = ntohl(ver);
-//			files_number = ntohl(files_number);
-//			files_names_len = ntohl(files_names_len);
-//			files_size = ntohl(files_size);
-//		}
+		void swapbytes()
+		{
+			ver = ntohl(ver);
+			files_number = ntohl(files_number);
+			files_names_len = ntohl(files_names_len);
+			files_size = ntohl(files_size);
+		}
 	} header;
-	unsigned long *files_sizes;
+	unsigned int *files_sizes;
 	char *files_names;
 	
 	//open XRWS file for reading
@@ -62,7 +62,7 @@ void unpack(const char *file, const char *out_dir)
 	
 	//read and check header
 	fread(&header, 1, sizeof(header), ifd);
-//	header.swap();
+	header.swapbytes();
 	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
