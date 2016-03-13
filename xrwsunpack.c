@@ -64,6 +64,7 @@ void unpack(const char *file, const char *out_dir)
 	if(*out_dir != '\0' && access(out_dir, W_OK) == -1)
 		terminate("No access to directory %s", out_dir);
 
+	//parse name of input file
 	name_start = strstr(file, PARSE_EXTENSIONS);
 	if(name_start != file)
 		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
@@ -73,7 +74,7 @@ void unpack(const char *file, const char *out_dir)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
 	strncpy(out_path, name_start, name_end - name_start);
 	name_end = strrchr(out_path, PARSE_VERSION_TOKEN);
-	if(name_end != NULL && name_end[1] = PARSE_VERSION)
+	if(name_end != NULL && name_end[1] == PARSE_VERSION)
 		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
 	strncpy(out_path2, out_path, name_end - out_path);
 	printf("%s", out_path2);
@@ -139,9 +140,11 @@ void unpack(const char *file, const char *out_dir)
 		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
 	
+	//check data size with header
 	if(ftell(ifd) != (header.files_size + sizeof(header) + sizeof(files_sizes) + header.files_names_len))
 		terminate("File %s corrupted", file);
 	
+	//create content.xml
 	sprintf(out_path2, "%s/%s", out_path, CONTENT_XML);
 	ofd = fopen(out_path2, "wb");
 	if(ofd == NULL)
