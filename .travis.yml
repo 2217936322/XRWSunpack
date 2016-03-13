@@ -1,0 +1,14 @@
+language: c
+
+compiler: gcc
+
+addons:
+  apt:
+    packages: mingw32
+
+install: make
+
+script:
+  - ./xrwsunpack
+  - ./xrwsunpack -h
+  - ./xrwsunpack --help
