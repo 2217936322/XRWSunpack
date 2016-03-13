@@ -124,7 +124,7 @@ void unpack(const char *file, const char *out_dir)
 		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
 	
-	printf("%d %d\n", ftell(ifd), header.files_size + sizeof(header) + sizeof(files_sizes) + sizeof(files_names));
+	printf("%d, %d %d %d %d\n", ftell(ifd), header.files_size, sizeof(header), sizeof(files_sizes), sizeof(files_names));
 	if(ftell(ifd) != (header.files_size + sizeof(header) + sizeof(files_sizes) + sizeof(files_names)))
 		terminate("File %s corrupted", file);
 	
