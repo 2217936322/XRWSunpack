@@ -49,8 +49,8 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_names_len;
 		unsigned int files_size;
 	} header;
-	unsigned int *files_sizes;
-	char **files_names, *data, *point;
+	unsigned int *files_sizes, files_names_pos;
+	char *files_names, *data, *point;
 	unsigned long read_size, len;
 	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
 	
@@ -106,7 +106,7 @@ void unpack(const char *file, const char *out_dir)
 	data = malloc(MAXSIZE);
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
-		printf("%s\n", out_path2);
+		printf("%s %s\n", out_path2, *files_names[counter]);
 		sprintf(out_path, "%s/%s", out_path2, files_names[counter]);
 printf("Create file %s\n", out_path);
 		ofd = fopen(out_path, "wb");
