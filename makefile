@@ -1,6 +1,7 @@
 SRC=xrwsunpack.c
 PROG=xrwsunpack$(EXE)
 LDFLAGS += -Wall
+STRIP=strip
 
 ifeq (${CROSS},win)
 STRIP=strip
