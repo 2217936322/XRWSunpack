@@ -68,7 +68,8 @@ void unpack(const char *file, const char *out_dir)
 	//read sizes of files
 	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
-	fread(files_sizes, 1, sizeof(files_sizes), ifd);
+	terminate("%d, %d", files_sizes[0], files_sizes[1]);
+	fread(files_sizes, header.files_number, 4, ifd);
 	for(counter=0; counter++; counter<header.files_number)
 		files_sizes[counter] = ntohl(files_sizes[counter]);
 	terminate("%d, %d", files_sizes[0], files_sizes[1]);
