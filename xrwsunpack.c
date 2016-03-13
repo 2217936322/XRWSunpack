@@ -48,10 +48,14 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_size;
 	} header;
 	unsigned int *files_sizes, counter;
-	char *files_names, *data, *point, *dir;
+	char *files_names, *data, *point;
 	unsigned long read_size, len;
+	char dir[MAX_PATH], out_file[MAX_PATH];
 	
-	if((point = strrchr(file, '.')) != NULL )
+	if(out_dir != NULL && access(out_dir, W_OK) == -1)
+		terminate("No access to directory %s ", out_dir);
+	
+	if((point = strrchr(file, '.')) != NULL)
 		if(strcmp(point, ".dat") != 0)
 			terminate("File %s must contain .dat extension", file);
 
@@ -86,7 +90,6 @@ void unpack(const char *file, const char *out_dir)
 	fread(files_names, 1, header.files_names_len, ifd);
 	
 	//create extention subdirectory
-	dir = malloc(file - point);
 	strncpy(dir, file, sizeof(dir));
 	mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	
@@ -94,7 +97,8 @@ void unpack(const char *file, const char *out_dir)
 	data = malloc(MAXSIZE);
 	for(counter = 0; counter < header.files_number; counter++)
 	{
-		ofd = fopen(out_dir + "/" + dir + "/" + files_names[couner], "wb");
+		sprintf(out_file, "%s/%s/%s", out_dir, dir, files_names[couner]);
+		ofd = fopen(out_file, "wb");
 		if(ofd == NULL)
 			terminate("Cannot open output file %s", files_names[couner]);
 		
@@ -125,7 +129,7 @@ int main(int argc, char **argv)
 	if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
 		usage(argv);
 	else
-		unpack(argv[1], (argc > 2) ? argv[2] : "-");
+		unpack(argv[1], (argc > 2) ? argv[2] : "");
 
 	return 0;
 }
