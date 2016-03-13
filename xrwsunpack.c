@@ -48,8 +48,8 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_names_len;
 		unsigned int files_size;
 	} header;
-	unsigned int *files_sizes;
-	char *files_names, *data, *point;
+	unsigned int files_sizes[];
+	char *files_names[], *data, *point;
 	unsigned long read_size, len;
 	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
 	
@@ -94,7 +94,7 @@ void unpack(const char *file, const char *out_dir)
 	strncpy(out_path, file, point - file);
 	sprintf(out_path2, "%s/%s", out_dir, out_path);
 printf("Create directory %s\n", out_path2);
-	if(mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
+	if(mkdir(out_path2, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
 		printf("Create directory %s\n", out_path2);
 	else
 		terminate("Error creating directory %s", out_path2);
