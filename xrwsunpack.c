@@ -68,10 +68,10 @@ void unpack(const char *file, const char *out_dir)
 	//read and check header
 	fread(&header, 1, sizeof(header), ifd);
 	//convert integers
-	header.ver = ntohl(header.ver);
-	header.files_number = ntohl(header.files_number);
-	header.files_names_len = ntohl(header.files_names_len);
-	header.files_size = ntohl(header.files_size);
+	header.ver = ntohl((uint32_t)header.ver);
+	header.files_number = ntohl((uint32_t)header.files_number);
+	header.files_names_len = ntohl((uint32_t)header.files_names_len);
+	header.files_size = ntohl((uint32_t)header.files_size);
 	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
@@ -83,7 +83,7 @@ void unpack(const char *file, const char *out_dir)
 	fread(files_sizes, header.files_number, 4, ifd);
 	//convert integers
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
-		files_sizes[counter] = ntohl(files_sizes[counter]);
+		files_sizes[counter] = ntohl((uint32_t)files_sizes[counter]);
 	
 	//read names of files
 	files_names = malloc(header.files_names_len);
@@ -105,7 +105,7 @@ printf("Create directory %s\n", out_path2);
 	{
 		sprintf(out_path, "%s/%s", out_path2, files_names[counter]);
 printf("Create file %s\n", out_path);
-		ofd = fopen(out_file, "wb");
+		ofd = fopen(out_path, "wb");
 		if(ofd == NULL)
 			terminate("Cannot open output file %s", files_names[counter]);
 
