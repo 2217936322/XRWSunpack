@@ -11,5 +11,5 @@ install: make
 script:
   - ./xrwsunpack -h
   - ./xrwsunpack --help
-  - ./xrwsunpack ./test-env/test.dat
-  - ls -l ./test-env/test
+  - ./xrwsunpack ./test-env/extensions_nidaren_titurel_engine_fix_v107.dat
+  - ls -l ./test-env/nidaren_titurel_engine_fix
