@@ -50,7 +50,7 @@ void unpack(const char *file, const char *out_dir)
 	unsigned int *files_sizes, counter;
 	char *files_names, *data, *point;
 	unsigned long read_size, len;
-	char dir[MAX_PATH], out_file[MAX_PATH];
+	char dir[FILENAME_MAX], out_file[FILENAME_MAX];
 	
 	if(out_dir != NULL && access(out_dir, W_OK) == -1)
 		terminate("No access to directory %s ", out_dir);
