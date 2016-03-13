@@ -124,16 +124,16 @@ void unpack(const char *file, const char *out_dir)
 		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
 	
+	if(ftell(ifd) != files_size - sizeof(header))
+		terminate("Something wrong %s");
+	
 	sprintf(out_path, "%s/%s", out_path2, CONTENT_XML);
 	ofd = fopen(out_path, "wb");
 	if(ofd == NULL)
 		terminate("Cannot create file %s", out_path);
 	
-	while((read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd))) > 0)
-	{
-		len = fread(data, 1, read_size, ifd);
+	while(len = fread(data, 1, MAXSIZE, ifd) > 0)
 		fwrite(data, 1, len, ofd);
-	}
 
 	fclose(ofd);
 	printf("File %s created\n", out_path);
