@@ -51,7 +51,7 @@ void unpack(const char *file, const char *out_dir)
 	unsigned int *files_sizes;
 	char *files_names, *data, *point;
 	unsigned long read_size, len;
-	char dir[FILENAME_MAX*2], out_file[FILENAME_MAX*2];
+	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
 	
 	if(out_dir != NULL && access(out_dir, W_OK) == -1)
 		terminate("No access to directory %s", out_dir);
@@ -91,20 +91,24 @@ void unpack(const char *file, const char *out_dir)
 	fread(files_names, 1, header.files_names_len, ifd);
 	
 	//create extention subdirectory
-	printf("Create %s %u %u\n", out_dir, point, file);
-	sprintf(dir, "%s/%s", out_dir, point - file);
-	mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	strncpy(out_path, file, point - file);
+	sprintf(out_path2, "%s/%s", out_dir, out_path);
+printf("Create directory %s\n", out_path2);
+	if(mkdir(dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
+		printf("Create directory %s\n", out_path2);
+	else
+		terminate("Error creating directory %s", out_path2);
 	
 	//create files
 	data = malloc(MAXSIZE);
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
-		printf("Create %s/%s", dir, files_names[counter]);
-		sprintf(out_file, "%s/%s", dir, files_names[counter]);
+		sprintf(out_path, "%s/%s", out_path2, files_names[counter]);
+printf("Create file %s\n", out_path);
 		ofd = fopen(out_file, "wb");
 		if(ofd == NULL)
 			terminate("Cannot open output file %s", files_names[counter]);
-		
+
 		while((read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd))) > 0)
 		{
 			len = fread(data, 1, read_size, ifd);
@@ -112,6 +116,7 @@ void unpack(const char *file, const char *out_dir)
 		}
 		
 		fclose(ofd);
+		printf("File %s unpacked\n", out_path);
 	}
 
 	fclose(ifd);
