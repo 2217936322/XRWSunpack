@@ -12,3 +12,4 @@ script:
   - ./xrwsunpack -h
   - ./xrwsunpack --help
   - ./xrwsunpack ./test-env/test.dat
+  - ls -l
