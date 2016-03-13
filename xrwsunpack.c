@@ -107,7 +107,7 @@ void unpack(const char *file, const char *out_dir)
 	files_names_pos = 0;
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
-		printf("%s %c\n", out_path2, files_names[files_names_pos]);
+		printf("%s %s\n", out_path2, (char *)files_names[files_names_pos]);
 /*		sprintf(out_path, "%s/%s", out_path2, files_names[files_names_pos]);
 printf("Create file %s\n", out_path);
 		ofd = fopen(out_path, "wb");
