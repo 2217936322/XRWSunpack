@@ -48,8 +48,8 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_names_len;
 		unsigned int files_size;
 	} header;
-	unsigned int files_sizes[];
-	char *files_names[], *data, *point;
+	unsigned int *files_sizes;
+	char **files_names, *data, *point;
 	unsigned long read_size, len;
 	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
 	
