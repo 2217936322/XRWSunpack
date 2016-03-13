@@ -31,7 +31,7 @@ void usage(char **argv)
 	fprintf(stderr, "%s\n", xrwsunpack_header);
 	fprintf(stderr, "Usage: %s [option] .dat_file [OUT_DIR]\n", argv[0]);
 	fprintf(stderr, "Unpack X Rebirth Workshop (XRWS) .dat files downloaded from Steam\n");
-	fprintf(stderr, "%s -h or --help for help\n\n");
+	fprintf(stderr, "Type %s -h or --help for this help screen\n\n", argv[0]);
 	fprintf(stderr, "Report bugs to <https://github.com/Lighting/XRWSunpack/issues>\n");
 }
 
@@ -71,7 +71,7 @@ void unpack(const char *file, const char *out_dir)
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, header.files_number, 4, ifd);
 	for(counter=0; counter++; counter<header.files_number)
-		files_sizes[counter] = htonl(files_sizes[counter]);
+		files_sizes[counter] = ntohl(files_sizes[counter]);
 	terminate("%u, %u", files_sizes[0], files_sizes[1]);
  
 	//read names of files
