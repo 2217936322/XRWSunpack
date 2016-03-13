@@ -97,7 +97,6 @@ void unpack(const char *file, const char *out_dir)
 		sprintf(out_path2, "%s/%s", out_dir, out_path);
 	else
 		strcpy(out_path2, out_path);
-printf("Create directory %s\n", out_path2);
 	if(mkdir(out_path2, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
 		printf("Create directory %s\n", out_path2);
 	else
@@ -107,6 +106,7 @@ printf("Create directory %s\n", out_path2);
 	data = malloc(MAXSIZE);
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
+		printf("%s\n", out_path2);
 		sprintf(out_path, "%s/%s", out_path2, files_names[counter]);
 printf("Create file %s\n", out_path);
 		ofd = fopen(out_path, "wb");
