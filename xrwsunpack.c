@@ -93,7 +93,10 @@ void unpack(const char *file, const char *out_dir)
 	
 	//create extention subdirectory
 	strncpy(out_path, file, point - file);
-	sprintf(out_path2, "%s/%s", out_dir, out_path);
+	if(out_dir != "")
+		sprintf(out_path2, "%s/%s", out_dir, out_path);
+	else
+		strcpy(out_path2, out_path);
 printf("Create directory %s\n", out_path2);
 	if(mkdir(out_path2, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
 		printf("Create directory %s\n", out_path2);
