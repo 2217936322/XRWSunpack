@@ -47,6 +47,7 @@ void unpack(const char *file, const char *out_dir)
 	} header;
 	unsigned int *files_sizes;
 	char *files_names;
+	unsigned int counter;
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
@@ -68,8 +69,8 @@ void unpack(const char *file, const char *out_dir)
 	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, 1, sizeof(files_sizes), ifd);
-	for (unsigned int i=0; i++; i<header.files_number)
-		files_sizes[i] = ntohl(files_sizes[i]);
+	for(counter=0; counter++; counter<header.files_number)
+		files_sizes[counter] = ntohl(files_sizes[counter]);
 	terminate("%d, %d", files_sizes[0], files_sizes[1]);
  
 	//read names of files
