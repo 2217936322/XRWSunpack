@@ -72,7 +72,7 @@ printf("name_start %s\n", name_start);
 printf("name_end %s\n", name_end);
 	if(name_end != name_start)
 		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
-	name_start += sizeof(PARSE_EXTENSIONS);
+	name_start += sizeof(PARSE_EXTENSIONS) - 1;
 printf("name_start %s\n", name_start);
 	name_end = strrchr(name_start, '.');
 printf("name_end %s\n", name_end);
@@ -82,7 +82,7 @@ printf("name_end %s\n", name_end);
 printf("out_path %s\n", out_path);
 	name_end = strrchr(out_path, PARSE_VERSION_TOKEN);
 printf("name_end %s\n", name_end);
-	if(name_end != NULL && name_end[1] == PARSE_VERSION)
+	if(name_end == NULL || name_end[1] != PARSE_VERSION)
 		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
 	strncpy(out_path2, out_path, name_end - out_path);
 printf("out_path2 %s\n", out_path2);
