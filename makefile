@@ -11,6 +11,6 @@ EXE=.exe
 
 all: $(PROG)
 
-xrwsunpack(EXE): $(SRC)
+xrwsunpack$(EXE): $(SRC)
 	$(CC) -g -o $@ $^ $(LDFLAGS) -lstdc++ 
 	$(STRIP) $@
