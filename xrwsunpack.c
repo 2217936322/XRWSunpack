@@ -124,7 +124,7 @@ void unpack(const char *file, const char *out_dir)
 		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
 	
-	if(ftell(ifd) != files_size - sizeof(header))
+	if(ftell(ifd) != header.files_size - sizeof(header))
 		terminate("Something wrong %s");
 	
 	sprintf(out_path, "%s/%s", out_path2, CONTENT_XML);
