@@ -43,12 +43,12 @@ void unpack(const char *file, const char *out_dir)
 	FILE *ifd, *ofd;
 	struct header_struct {
 		char sig[4];
-		unsigned long ver;
-		unsigned long files_number;
-		unsigned long files_names_len;
-		unsigned long files_size;
+		unsigned int ver;
+		unsigned int files_number;
+		unsigned int files_names_len;
+		unsigned int files_size;
 	} header;
-	unsigned long *files_sizes;
+	unsigned int *files_sizes;
 	char *files_names, *data, *point;
 	unsigned long read_size, len;
 	char dir[FILENAME_MAX], out_file[FILENAME_MAX];
