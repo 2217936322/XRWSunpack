@@ -36,16 +36,16 @@ void usage(char **argv)
 
 void unpack(const char *file, const char *out_dir)
 {
-	FILE *ifd, *ofd;
+	FILE *ifd;
 	struct header_struct {
 		char sig[4];
 		unsigned long ver;
-		unsigned long files_numder;
+		unsigned long files_number;
 		unsigned long files_names_len;
 		unsigned long files_size;
 	} header;
 	unsigned long *files_sizes;
-	char *files_names, *data;
+	char *files_names;
 	
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
@@ -53,7 +53,7 @@ void unpack(const char *file, const char *out_dir)
 		terminate("Cannot open theme file %s", file);
 	
 	//read and check header
-	fread(header, 1, sizeof(header), ifd);
+	fread((char *)header, 1, sizeof(header), ifd);
 	if(strncmp(header.sig, XRWS_SIGNATURE, 4) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
@@ -65,7 +65,7 @@ void unpack(const char *file, const char *out_dir)
 	fread(files_sizes, 1, sizeof(files_sizes), ifd);
   
 	//read names of files
-	files_names = malloc(header.filename_len);
+	files_names = malloc(header.files_names_len);
 	memset(files_names, 0, sizeof(files_names));
 	fread(files_names, 1, sizeof(files_names), ifd);
 	
