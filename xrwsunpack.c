@@ -15,6 +15,11 @@
 #define XRWS_SIGNATURE "XRWS"
 #define XRWS_VERSION 1
 #define CONTENT_XML "content.xml"
+#define PARSE_DAT ".dat"
+#define PARSE_EXTENSIONS "extensions_"
+#define PARSE_VERSION 'v'
+#define PARSE_VERSION_TOKEN '_'
+#define PARSE_WARNING "\nDont change file name after downloading from Steam"
 
 const char *xrwsunpack_header = "XRWSunpack v0.1 (" __DATE__ " " __TIME__ ")";
 
@@ -33,7 +38,7 @@ void terminate(const char *fmt, ...)
 void usage(char **argv)
 {
 	fprintf(stderr, "%s\n", xrwsunpack_header);
-	fprintf(stderr, "Usage: %s [option] .dat_file [OUT_DIR]\n", argv[0]);
+	fprintf(stderr, "Usage: %s [option] extensions.dat [OUT_DIR]\n", argv[0]);
 	fprintf(stderr, "Unpack X Rebirth Workshop (XRWS) .dat files downloaded from Steam\n");
 	fprintf(stderr, "Type %s -h or --help for this help screen\n\n", argv[0]);
 	fprintf(stderr, "To download files from Steam Workshop use http://steamworkshopdownloader.com\n");
@@ -51,16 +56,27 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_size;
 	} header;
 	unsigned int *files_sizes, files_names_pos;
-	char *files_names, *data, *point;
+	char *files_names, *data, *name_start, *name_end;
 	unsigned long read_size, len;
 	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
 	
+	//check output directory
 	if(*out_dir != '\0' && access(out_dir, W_OK) == -1)
 		terminate("No access to directory %s", out_dir);
-	
-	if((point = strrchr(file, '.')) != NULL)
-		if(strcmp(point, ".dat") != 0)
-			terminate("File %s must contain .dat extension", file);
+
+	name_start = strstr(file, PARSE_EXTENSIONS);
+	if(name_start != file)
+		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
+	name_start += sizeof(PARSE_EXTENSIONS);
+	name_end = strrchr(name_start, '.');
+	if(name_end == NULL || strcmp(name_end, PARSE_DAT) != 0)
+		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
+	strncpy(out_path, name_start, name_end - name_start);
+	name_end = strrchr(out_path, PARSE_VERSION_TOKEN);
+	if(name_end != NULL && name_end[1] = PARSE_VERSION)
+		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
+	strncpy(out_path2, out_path, name_end - out_path);
+	printf("%s", out_path2);
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
@@ -93,25 +109,24 @@ void unpack(const char *file, const char *out_dir)
 	fread(files_names, 1, header.files_names_len, ifd);
 	
 	//create extention subdirectory
-	strncpy(out_path, file, point - file);
 	if(*out_dir != '\0')
-		sprintf(out_path2, "%s/%s", out_dir, out_path);
+		sprintf(out_path, "%s/%s", out_dir, out_path2);
 	else
-		strcpy(out_path2, out_path);
-	if(mkdir(out_path2, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
-		printf("Create directory %s\n", out_path2);
+		strcpy(out_path, out_path2);
+	if(mkdir(out_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
+		printf("Create directory %s\n", out_path);
 	else
-		terminate("Connot create directory %s", out_path2);
+		terminate("Connot create directory %s", out_path);
 	
 	//create files
 	data = malloc(MAXSIZE);
 	files_names_pos = 0;
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
-		sprintf(out_path, "%s/%s", out_path2, files_names + files_names_pos);
-		ofd = fopen(out_path, "wb");
+		sprintf(out_path2, "%s/%s", out_path, files_names + files_names_pos);
+		ofd = fopen(out_path2, "wb");
 		if(ofd == NULL)
-			terminate("Cannot create file %s", out_path);
+			terminate("Cannot create file %s", out_path2);
 
 		while((read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd))) > 0)
 		{
@@ -120,24 +135,23 @@ void unpack(const char *file, const char *out_dir)
 		}
 		
 		fclose(ofd);
-		printf("File %s unpacked\n", out_path);
+		printf("File %s unpacked\n", out_path2);
 		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
 	
-	printf("%d, %d %d %d %d\n", ftell(ifd), header.files_size, sizeof(header), sizeof(files_sizes), header.files_names_len);
 	if(ftell(ifd) != (header.files_size + sizeof(header) + sizeof(files_sizes) + header.files_names_len))
 		terminate("File %s corrupted", file);
 	
-	sprintf(out_path, "%s/%s", out_path2, CONTENT_XML);
-	ofd = fopen(out_path, "wb");
+	sprintf(out_path2, "%s/%s", out_path, CONTENT_XML);
+	ofd = fopen(out_path2, "wb");
 	if(ofd == NULL)
-		terminate("Cannot create file %s", out_path);
+		terminate("Cannot create file %s", out_path2);
 	
 	while((len = fread(data, 1, MAXSIZE, ifd)) > 0)
 		fwrite(data, 1, len, ofd);
 
 	fclose(ofd);
-	printf("File %s created\n", out_path);
+	printf("File %s created\n", out_path2);
 
 	fclose(ifd);
 	
