@@ -21,10 +21,8 @@
 
 #ifdef __linux__
 	#define MAKEDIR(a) mkdir(a, 0775)
-	#define SWAPBYTES(a) swab(a)
 #else
 	#define MAKEDIR(a) _mkdir(a)
-	#define SWAPBYTES(a) _swab(a)
 #endif
 
 
@@ -96,23 +94,23 @@ void unpack(const char *file, const char *out_dir)
 //	header.files_number = __bswap_32(header.files_number);
 //	header.files_names_len = __bswap_32(header.files_names_len);
 //	header.files_size = __bswap_32(header.files_size);
-	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
+	if(strncmp(header_sig, XRWS_SIGNATURE, sizeof(header_sig)) != 0)
 		terminate("%s is not a XRWS file", file);
-	if(header.ver != XRWS_VERSION)
-		terminate("%s have unsupported XRWS version %u", file, header.ver);
+	if(header_ver != XRWS_VERSION)
+		terminate("%s have unsupported XRWS version %u", file, header_ver);
 	
 	//read sizes of files
-	files_sizes = malloc(header.files_number * 4);
+	files_sizes = malloc(files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
-	fread(files_sizes, header.files_number, 4, ifd);
+	fread(files_sizes, files_number, 4, ifd);
 	//convert integers
-//	for(unsigned long counter = 0; counter < header.files_number; counter++)
+//	for(unsigned long counter = 0; counter < files_number; counter++)
 //		files_sizes[counter] = __bswap_32(files_sizes[counter]);
 	
 	//read names of files
-	files_names = malloc(header.files_names_len);
-	memset(files_names, 0, header.files_names_len);
-	fread(files_names, 1, header.files_names_len, ifd);
+	files_names = malloc(files_names_len);
+	memset(files_names, 0, files_names_len);
+	fread(files_names, 1, files_names_len, ifd);
 	
 	//create extention subdirectory
 	if(*out_dir != '\0')
@@ -146,7 +144,7 @@ void unpack(const char *file, const char *out_dir)
 	}
 	
 	//check data size with header
-	if(ftell(ifd) != (header.files_size + sizeof(header) + sizeof(files_sizes) + header.files_names_len))
+	if(ftell(ifd) != (files_size + 16 + sizeof(files_sizes) + files_names_len))
 		terminate("File %s corrupted", file);
 	
 	//create content.xml
