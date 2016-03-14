@@ -23,7 +23,7 @@
 #ifdef __linux__
 	#define MAKEDIR(a) mkdir(a, 775)
 #else
-	#define MAKEDIR(a) _mkdir(a);
+	#define MAKEDIR(a) _mkdir(a)
 #endif
 
 
