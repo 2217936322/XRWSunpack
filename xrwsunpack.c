@@ -9,7 +9,6 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <netinet/in.h>
 
 #define MAXSIZE 520000
 #define XRWS_SIGNATURE "XRWS"
@@ -20,6 +19,13 @@
 #define PARSE_VERSION 'v'
 #define PARSE_VERSION_TOKEN '_'
 #define PARSE_WARNING "\nDont change file name after downloading from Steam"
+
+#ifdef __linux__
+	#define MAKEDIR(a) mkdir(a, 775)
+#else
+	#define MAKEDIR(a) _mkdir(a);
+#endif
+
 
 const char *xrwsunpack_header = "XRWSunpack v0.1 (" __DATE__ " " __TIME__ ")";
 
@@ -117,7 +123,7 @@ void unpack(const char *file, const char *out_dir)
 		sprintf(out_path, "%s/%s", out_dir, out_path2);
 	else
 		strcpy(out_path, out_path2);
-	if(mkdir(out_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
+	if(MAKEDIR(out_path) == 0)
 		printf("Create directory %s\n", out_path);
 	else
 		terminate("Connot create directory %s", out_path);
