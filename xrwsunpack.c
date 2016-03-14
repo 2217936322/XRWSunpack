@@ -72,21 +72,28 @@ void unpack(const char *file, const char *out_dir)
 
 	//remove prefix path from name of file
 	name_start = strrchr(file, '/') + 1;
+prinf("name_start %s\n", name_start);
 	//remove prefix text from name of file
 	name_end = strstr(name_start, PARSE_EXTENSIONS);
+prinf("name_end %s\n", name_end);
 	if(name_end != name_start)
 		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
 	name_start += sizeof(PARSE_EXTENSIONS) - 1;
+prinf("name_start %s\n", name_start);
 	//remove extention and check it
 	name_end = strrchr(name_start, '.');
+prinf("name_end %s\n", name_end);
 	if(name_end == NULL || strcmp(name_end, PARSE_DAT) != 0)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
 	strncpy(out_path, name_start, name_end - name_start);
+prinf("out_path %s\n", out_path);
 	//remove version from name of file
 	name_end = strrchr(out_path, PARSE_VERSION_TOKEN);
+prinf("name_end %s\n", name_end);
 	if(name_end == NULL || name_end[1] != PARSE_VERSION)
 		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
 	strncpy(out_path2, out_path, name_end - out_path);
+prinf("out_path2 %s\n", out_path2);
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
