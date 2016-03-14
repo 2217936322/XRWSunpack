@@ -25,6 +25,7 @@
 	#define MAKEDIR(a) _mkdir(a)
 #endif
 
+#define SWAP_UINT32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) | (((x) & 0x0000FF00) << 8) | ((x) << 24))
 
 const char *xrwsunpack_header = "XRWSunpack v0.1 (" __DATE__ " " __TIME__ ")";
 
@@ -53,8 +54,13 @@ void usage(char **argv)
 void unpack(const char *file, const char *out_dir)
 {
 	FILE *ifd, *ofd;
-	char sig[4];
-	unsigned int version, files_number, files_names_len, files_size, reverse_int;
+	struct header_struct {
+		char sig[4];
+		unsigned int ver;
+		unsigned int files_number;
+		unsigned int files_names_len;
+		unsigned int files_size;
+	} header;
 	unsigned int *files_sizes, files_names_pos;
 	char *files_names, *data, *name_start, *name_end;
 	unsigned long read_size, len;
@@ -87,30 +93,30 @@ void unpack(const char *file, const char *out_dir)
 	if(ifd == NULL)
 		terminate("Cannot open XRWS file %s", file);
 	
-	//read and check header
-	fread(&sig, 1, sizeof(sig), ifd);
-	fread(&version, 1, sizeof(version), ifd);
-	printf("%d", version);
-//	header.files_number = __bswap_32(header.files_number);
-//	header.files_names_len = __bswap_32(header.files_names_len);
-//	header.files_size = __bswap_32(header.files_size);
-	if(strncmp(sig, XRWS_SIGNATURE, sizeof(sig)) != 0)
+	//read header
+	fread(&header, 1, sizeof(header), ifd);
+	//convert little-big endian uint
+	header.ver = SWAP_UINT32(header.ver);
+	header.files_number = SWAP_UINT32(header.files_number);
+	header.files_names_len = SWAP_UINT32(header.files_names_len);
+	header.files_size = SWAP_UINT32(header.files_size);
+	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
-	if(version != XRWS_VERSION)
-		terminate("%s have unsupported XRWS version %u", file, version);
+	if(header.ver != XRWS_VERSION)
+		terminate("%s have unsupported XRWS version %u", file, header.ver);
 	
 	//read sizes of files
-	files_sizes = malloc(files_number * 4);
+	files_sizes = malloc(header.files_number * 4);
 	memset(files_sizes, 0, sizeof(files_sizes));
-	fread(files_sizes, files_number, 4, ifd);
-	//convert integers
-//	for(unsigned long counter = 0; counter < files_number; counter++)
-//		files_sizes[counter] = __bswap_32(files_sizes[counter]);
+	fread(files_sizes, header.files_number, 4, ifd);
+	//convert little-big endian uint
+	for(unsigned long counter = 0; counter < header.files_number; counter++)
+		files_sizes[counter] = SWAP_UINT32(files_sizes[counter]);
 	
 	//read names of files
-	files_names = malloc(files_names_len);
-	memset(files_names, 0, files_names_len);
-	fread(files_names, 1, files_names_len, ifd);
+	files_names = malloc(header.files_names_len);
+	memset(files_names, 0, header.files_names_len);
+	fread(files_names, 1, header.files_names_len, ifd);
 	
 	//create extention subdirectory
 	if(*out_dir != '\0')
@@ -125,7 +131,7 @@ void unpack(const char *file, const char *out_dir)
 	//create files
 	data = malloc(MAXSIZE);
 	files_names_pos = 0;
-	for(unsigned long counter = 0; counter < files_number; counter++)
+	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
 		sprintf(out_path2, "%s/%s", out_path, files_names + files_names_pos);
 		ofd = fopen(out_path2, "wb");
@@ -144,7 +150,7 @@ void unpack(const char *file, const char *out_dir)
 	}
 	
 	//check data size with header
-	if(ftell(ifd) != (files_size + 16 + sizeof(files_sizes) + files_names_len))
+	if(ftell(ifd) != (header.files_size + sizeof(header) + sizeof(files_sizes) + header.files_names_len))
 		terminate("File %s corrupted", file);
 	
 	//create content.xml
