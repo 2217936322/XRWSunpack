@@ -85,14 +85,14 @@ printf("name_start %s\n", name_start);
 printf("name_end %s\n", name_end);
 	if(name_end == NULL || strcmp(name_end, PARSE_DAT) != 0)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
-	strncpy(out_path, name_start, name_end - name_start);
+	strncpy(out_path, name_start, name_end - name_start - 1);
 printf("out_path %s\n", out_path);
 	//remove version from name of file
 	name_end = strrchr(out_path, PARSE_VERSION_TOKEN);
 printf("name_end %s\n", name_end);
 	if(name_end == NULL || name_end[1] != PARSE_VERSION)
 		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
-	strncpy(out_path2, out_path, name_end - out_path);
+	strncpy(out_path2, out_path, name_end - out_path - 1);
 printf("out_path2 %s\n", out_path2);
 
 	//open XRWS file for reading
