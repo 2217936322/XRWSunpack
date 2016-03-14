@@ -8,7 +8,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include <byteswap.h>
 
 #define MAXSIZE 520000
 #define XRWS_SIGNATURE "XRWS"
@@ -61,7 +60,7 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_names_len;
 		unsigned int files_size;
 	} header;
-	unsigned int *files_sizes, files_names_pos;
+	unsigned int *files_sizes, files_names_pos, reverse_int;
 	char *files_names, *data, *name_start, *name_end;
 	unsigned long read_size, len;
 	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
@@ -96,10 +95,10 @@ void unpack(const char *file, const char *out_dir)
 	//read and check header
 	fread(&header, 1, sizeof(header), ifd);
 	//convert integers
-	header.ver = __bswap_32(header.ver);
-	header.files_number = __bswap_32(header.files_number);
-	header.files_names_len = __bswap_32(header.files_names_len);
-	header.files_size = __bswap_32(header.files_size);
+	_swab(&header.ver, &header.ver, sizeof(header.ver));
+//	header.files_number = __bswap_32(header.files_number);
+//	header.files_names_len = __bswap_32(header.files_names_len);
+//	header.files_size = __bswap_32(header.files_size);
 	if(strncmp(header.sig, XRWS_SIGNATURE, sizeof(header.sig)) != 0)
 		terminate("%s is not a XRWS file", file);
 	if(header.ver != XRWS_VERSION)
@@ -110,8 +109,8 @@ void unpack(const char *file, const char *out_dir)
 	memset(files_sizes, 0, sizeof(files_sizes));
 	fread(files_sizes, header.files_number, 4, ifd);
 	//convert integers
-	for(unsigned long counter = 0; counter < header.files_number; counter++)
-		files_sizes[counter] = __bswap_32(files_sizes[counter]);
+//	for(unsigned long counter = 0; counter < header.files_number; counter++)
+//		files_sizes[counter] = __bswap_32(files_sizes[counter]);
 	
 	//read names of files
 	files_names = malloc(header.files_names_len);
