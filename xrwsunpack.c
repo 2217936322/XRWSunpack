@@ -44,7 +44,7 @@ void terminate(const char *fmt, ...)
 void usage(char **argv)
 {
 	fprintf(stderr, "%s\n", xrwsunpack_header);
-	fprintf(stderr, "Usage: %s [option] extensions.dat [OUT_DIR]\n", argv[0]);
+	fprintf(stderr, "Usage: %s [option] extension.dat [OUT_DIR]\n", argv[0]);
 	fprintf(stderr, "Unpack X Rebirth Workshop (XRWS) .dat files downloaded from Steam\n");
 	fprintf(stderr, "Type %s -h or --help for this help screen\n\n", argv[0]);
 	fprintf(stderr, "To download files from Steam Workshop use http://steamworkshopdownloader.com\n");
