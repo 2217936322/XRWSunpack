@@ -53,8 +53,8 @@ void usage(char **argv)
 void unpack(const char *file, const char *out_dir)
 {
 	FILE *ifd, *ofd;
-	char header_sig[4];
-	unsigned int header_ver, files_number, files_names_len, files_size, reverse_int;
+	char sig[4];
+	unsigned int version, files_number, files_names_len, files_size, reverse_int;
 	unsigned int *files_sizes, files_names_pos;
 	char *files_names, *data, *name_start, *name_end;
 	unsigned long read_size, len;
@@ -88,16 +88,16 @@ void unpack(const char *file, const char *out_dir)
 		terminate("Cannot open XRWS file %s", file);
 	
 	//read and check header
-	fread(&header_sig, 1, sizeof(header_sig), ifd);
-	fread(&header_ver, 1, sizeof(header_ver), ifd);
-	printf("%d", header_ver);
+	fread(&sig, 1, sizeof(sig), ifd);
+	fread(&version, 1, sizeof(version), ifd);
+	printf("%d", version);
 //	header.files_number = __bswap_32(header.files_number);
 //	header.files_names_len = __bswap_32(header.files_names_len);
 //	header.files_size = __bswap_32(header.files_size);
-	if(strncmp(header_sig, XRWS_SIGNATURE, sizeof(header_sig)) != 0)
+	if(strncmp(sig, XRWS_SIGNATURE, sizeof(sig)) != 0)
 		terminate("%s is not a XRWS file", file);
-	if(header_ver != XRWS_VERSION)
-		terminate("%s have unsupported XRWS version %u", file, header_ver);
+	if(version != XRWS_VERSION)
+		terminate("%s have unsupported XRWS version %u", file, version);
 	
 	//read sizes of files
 	files_sizes = malloc(files_number * 4);
@@ -125,7 +125,7 @@ void unpack(const char *file, const char *out_dir)
 	//create files
 	data = malloc(MAXSIZE);
 	files_names_pos = 0;
-	for(unsigned long counter = 0; counter < header.files_number; counter++)
+	for(unsigned long counter = 0; counter < files_number; counter++)
 	{
 		sprintf(out_path2, "%s/%s", out_path, files_names + files_names_pos);
 		ofd = fopen(out_path2, "wb");
