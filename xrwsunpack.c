@@ -21,7 +21,7 @@
 #define PARSE_WARNING "\nDont change file name after downloading from Steam"
 
 #ifdef __linux__
-	#define MAKEDIR(a) mkdir(a, 775)
+	#define MAKEDIR(a) mkdir(a, 0775)
 #else
 	#define MAKEDIR(a) _mkdir(a)
 #endif
