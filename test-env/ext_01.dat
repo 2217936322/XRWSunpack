@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Exported by: Benedikt (192.168.3.115) at 22.05.2013_16-46-51-->
+<macros>
+  <macro name="engine_size_m_03_titurel_macro" class="engine">
+    <component ref="props_enginesystems_engine_m" />
+    <properties>
+      <identification name="{20104,1201}" description="{20104,1202}" />
+      <acceleration forward="4" reverse="2" strafe="4" pitch="0.1" yaw="0.1" roll="0.1" />
+      <angular roll="15" pitch="45" />
+      <speed forward="62" reverse="-10" strafe="10" pitch="2" yaw="2" roll="1" />
+      <hull max="30000" threshold="0.25" integrated="0" />
+      <effects>
+        <explosion ref="explosion_engine_m" />
+        <sefx_shield ref="sefx_shield_m_01" />
+      </effects>
+      <efficiency>
+        <threshold threshold="0.75" value="1" />
+        <threshold threshold="0.25" value="0.25" />
+      </efficiency>
+      <sounds>
+        <ambient ref="engineambient_large" volume="0.6" distance="4" />
+      </sounds>
+    </properties>
+    <connections>
+      <connection ref="connection_booster01">
+        <macro ref="enginebooster_size_m_01_macro" connection="engine" />
+      </connection>
+    </connections>
+  </macro>
+</macros><?xml version="1.0" encoding="utf-8"?>
+<diff>
+	<replace sel="/macros/macro[@name='units_size_xl_cargo_hauler_2_macro']/connections/connection[@ref='con_engine_l_01']">
+		<connection ref="con_engine_xlt_01">
+			<macro ref="engine_size_xl_cargo_hauler_02_macro" connection="Connection01"/>
+		</connection>
+	</replace>
+	<replace sel="/macros/macro[@name='units_size_xl_cargo_hauler_2_macro']/connections/connection[@ref='con_engine_m_01']">
+		<connection ref="con_engine_mt_01">
+			<macro ref="engine_size_m_03_titurel_macro" connection="Connection01"/>
+		</connection>
+	</replace>
+	<replace sel="/macros/macro[@name='units_size_xl_cargo_hauler_2_macro']/connections/connection[@ref='con_engine_m_02']">
+		<connection ref="con_engine_mt_02">
+			<macro ref="engine_size_m_03_titurel_macro" connection="Connection01"/>
+		</connection>
+	</replace>
+	<replace sel="/macros/macro[@name='units_size_xl_cargo_hauler_2_macro']/connections/connection[@ref='con_engine_m_03']">
+		<connection ref="con_engine_mt_03">
+			<macro ref="engine_size_m_03_titurel_macro" connection="Connection01"/>
+		</connection>
+	</replace>
+	<replace sel="/macros/macro[@name='units_size_xl_cargo_hauler_2_macro']/connections/connection[@ref='con_engine_m_04']">
+		<connection ref="con_engine_mt_04">
+			<macro ref="engine_size_m_03_titurel_macro" connection="Connection01"/>
+		</connection>
+	</replace>
+</diff><?xml version="1.0" encoding="utf-8"?>
+<diff>
+	<add sel="/components/component/connections">
+		<connection name="con_engine_xlt_01" group="group04 " tags="engine ">
+			<offset>
+				<position x="-66.01575" y="-40.69624" z="-859.3003"/>
+			</offset>
+		</connection>
+	</add>
+	<add sel="/components/component/connections">
+		<connection name="con_engine_mt_01" group="group04 " tags="engine ">
+			<offset>
+				<position x="-113.5053" y="34.84664" z="-837.1064"/>
+			</offset>
+		</connection>
+	</add>
+	<add sel="/components/component/connections">
+		<connection name="con_engine_mt_02" group="group04 " tags="engine ">
+			<offset>
+				<position x="-62.46482" y="47.19541" z="-769.2764"/>
+			</offset>
+		</connection>
+	</add>
+	<add sel="/components/component/connections">
+		<connection name="con_engine_mt_03" group="group04 " tags="engine ">
+			<offset>
+				<position x="-23.44091" y="47.19541" z="-769.2764"/>
+			</offset>
+		</connection>
+	</add>
+	<add sel="/components/component/connections">
+		<connection name="con_engine_mt_04" group="group04 " tags="engine ">
+			<offset>
+				<position x="15.12776" y="47.19541" z="-769.2764"/>
+			</offset>
+		</connection>
+	</add>
+</diff>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<diff>
+	<add sel="/index">
+		<entry name="engine_size_m_03_titurel_macro" value="extensions\nidaren_titurel_engine_fix\assets\props\EngineSystems\macros\engine_size_m_03_titurel_macro" />
+	</add>
+</diff><?xml version="1.0" encoding="ISO-8859-1" ?>
+<mdscript name="Update_Existing_Titurels" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="d:\x\md\md.xsd">
+<cues>
+	<cue name="Titurel_Checker" version="1">
+	<conditions>
+	<event_game_loaded /> 
+	</conditions>
+	<actions>
+	<find_ship name="$AllTiturels" macro="macro.units_size_xl_cargo_hauler_2_macro" space="player.galaxy" multiple="true" />
+	<do_if value="$AllTiturels.count == 0">
+        <debug_text text="'No existing Titurel ships found. No need to update.'"/>
+    </do_if>
+	<do_else>
+        <debug_text text="$AllTiturels.count + ' Titurel ships found'"/>
+		<debug_text text="'Updating existing vessels...'"/>
+		<patch_macros macro="macro.units_size_xl_cargo_hauler_2_macro" />
+		<debug_text text="'All existing ' + $AllTiturels.count + ' Titurels updated. Script completed.'"/>
+    </do_else>
+	<remove_value name="$AllTiturels" />
+	</actions>
+	<patch sinceversion="1" state="complete" >
+        <reset_cue cue="this"/>
+        <force_cue cue="this"/>
+    </patch>
+	</cue>
+</cues>
+</mdscript>
+	
