@@ -60,7 +60,7 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_names_len;
 		unsigned int files_size;
 	} header;
-	unsigned int *files_sizes, files_names_pos, reverse_int;
+	unsigned int *files_sizes, files_names_pos;
 	char *files_names, *data, *name_start, *name_end;
 	unsigned long read_size, len;
 	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
@@ -95,7 +95,7 @@ void unpack(const char *file, const char *out_dir)
 	//read and check header
 	fread(&header, 1, sizeof(header), ifd);
 	//convert integers
-	_swab(&header.ver, &header.ver, sizeof(header.ver));
+	swab(&header.ver, &header.ver, sizeof(header.ver));
 //	header.files_number = __bswap_32(header.files_number);
 //	header.files_names_len = __bswap_32(header.files_names_len);
 //	header.files_size = __bswap_32(header.files_size);
