@@ -12,4 +12,6 @@ script:
   - ./xrwsunpack -h
   - ./xrwsunpack --help
   - ./xrwsunpack ./test-env/extensions_nidaren_titurel_engine_fix_v107.dat
+  - ls -l ./nidaren_titurel_engine_fix
+  - ./xrwsunpack ./test-env/extensions_nidaren_titurel_engine_fix_v107.dat ./test-env
   - ls -l ./test-env/nidaren_titurel_engine_fix
