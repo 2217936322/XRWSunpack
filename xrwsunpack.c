@@ -64,28 +64,23 @@ void unpack(const char *file, const char *out_dir)
 	if(*out_dir != '\0' && access(out_dir, W_OK) == -1)
 		terminate("No access to directory %s", out_dir);
 
-	//parse name of input file
-printf("file %s\n", file);
+	//remove prefix path from name of file
 	name_start = strrchr(file, '/') + 1;
-printf("name_start %s\n", name_start);
+	//remove prefix text from name of file
 	name_end = strstr(name_start, PARSE_EXTENSIONS);
-printf("name_end %s\n", name_end);
 	if(name_end != name_start)
 		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
 	name_start += sizeof(PARSE_EXTENSIONS) - 1;
-printf("name_start %s\n", name_start);
+	//remove extention and check it
 	name_end = strrchr(name_start, '.');
-printf("name_end %s\n", name_end);
 	if(name_end == NULL || strcmp(name_end, PARSE_DAT) != 0)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
 	strncpy(out_path, name_start, name_end - name_start);
-printf("out_path %s\n", out_path);
+	//remove version from name of file
 	name_end = strrchr(out_path, PARSE_VERSION_TOKEN);
-printf("name_end %s\n", name_end);
 	if(name_end == NULL || name_end[1] != PARSE_VERSION)
 		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
 	strncpy(out_path2, out_path, name_end - out_path);
-printf("out_path2 %s\n", out_path2);
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
@@ -157,15 +152,12 @@ printf("out_path2 %s\n", out_path2);
 	ofd = fopen(out_path2, "wb");
 	if(ofd == NULL)
 		terminate("Cannot create file %s", out_path2);
-	
 	while((len = fread(data, 1, MAXSIZE, ifd)) > 0)
 		fwrite(data, 1, len, ofd);
-
 	fclose(ofd);
 	printf("File %s created\n", out_path2);
 
 	fclose(ifd);
-	
 	free(data);
 	free(files_sizes);
 	free(files_names);
