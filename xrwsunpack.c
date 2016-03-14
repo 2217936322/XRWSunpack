@@ -21,8 +21,10 @@
 
 #ifdef __linux__
 	#define MAKEDIR(a) mkdir(a, 0775)
+	#define SWAPBYTES(a) swab(a)
 #else
 	#define MAKEDIR(a) _mkdir(a)
+	#define SWAPBYTES(a) _swab(a)
 #endif
 
 
@@ -53,13 +55,8 @@ void usage(char **argv)
 void unpack(const char *file, const char *out_dir)
 {
 	FILE *ifd, *ofd;
-	struct header_struct {
-		char sig[4];
-		unsigned int ver;
-		unsigned int files_number;
-		unsigned int files_names_len;
-		unsigned int files_size;
-	} header;
+	char header_sig[4];
+	unsigned int header_ver, files_number, files_names_len, files_size, reverse_int;
 	unsigned int *files_sizes, files_names_pos;
 	char *files_names, *data, *name_start, *name_end;
 	unsigned long read_size, len;
@@ -93,9 +90,9 @@ void unpack(const char *file, const char *out_dir)
 		terminate("Cannot open XRWS file %s", file);
 	
 	//read and check header
-	fread(&header, 1, sizeof(header), ifd);
-	//convert integers
-	swab(&header.ver, &header.ver, sizeof(header.ver));
+	fread(&header_sig, 1, sizeof(header_sig), ifd);
+	fread(&header_ver, 1, sizeof(header_ver), ifd);
+	printf("%d", header_ver);
 //	header.files_number = __bswap_32(header.files_number);
 //	header.files_names_len = __bswap_32(header.files_names_len);
 //	header.files_size = __bswap_32(header.files_size);
