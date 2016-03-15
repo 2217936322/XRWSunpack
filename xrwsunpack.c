@@ -73,29 +73,22 @@ void unpack(const char *file, const char *out_dir)
 
 	//remove prefix path from name of file
 	pointer = strrchr(file, '/') + 1;
-printf("pointer %s\n", pointer);
 	//remove prefix text from name of file
 	pointer2 = strstr(pointer, PARSE_EXTENSIONS);
-printf("pointer2 %s\n", pointer2);
 	if(pointer != pointer2)
 		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
 	pointer2 += PARSE_EXTENSIONS_LEN;
-printf("pointer2 %s\n", pointer2);
 	//remove extention and check it
 	pointer = strrchr(pointer2, '.');
-printf("pointer %s\n", pointer);
 	if(pointer == NULL || strcmp(pointer, PARSE_DAT) != 0)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
 	strncpy(out_name, pointer2, pointer - pointer2);
 	out_name[pointer - pointer2] = '\0';
-printf("out_name %s\n", out_name);
 	//remove version from name of file
 	pointer = strrchr(out_name, PARSE_VERSION_TOKEN);
-printf("pointer %s\n", pointer);
 	if(pointer == NULL || pointer[1] != PARSE_VERSION)
 		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
 	pointer[0] = '\0';
-printf("out_name %s\n", out_name);
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
