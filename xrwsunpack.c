@@ -127,9 +127,7 @@ void unpack(const char *file, const char *out_dir)
 		snprintf(out_path, sizeof(out_path), "%s/%s", out_dir, out_name);
 	else
 		strcpy(out_path, out_name);
-	if(MAKEDIR(out_path) == 0)
-		printf("Create directory %s\n", out_path);
-	else
+	if(MAKEDIR(out_path) != 0)
 		terminate("Connot create directory %s", out_path);
 	
 	//create files
