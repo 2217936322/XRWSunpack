@@ -28,7 +28,7 @@
 
 #define SWAP_UINT32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) | (((x) & 0x0000FF00) << 8) | ((x) << 24))
 
-const char *xrwsunpack_header = "XRWSunpack v0.1 (" __DATE__ " " __TIME__ ")";
+const char *xrwsunpack_header = "XRWSunpack v1.0 (" __DATE__ " " __TIME__ ")";
 
 void terminate(const char *fmt, ...)
 {
