@@ -73,10 +73,9 @@ void unpack(const char *file, const char *out_dir)
 
 	//remove prefix path from name of file
 	pointer = strrchr(file, '/');
-	if(pointer == NULL)
-		pointer = file;
-	else
-		pointer++;
+	(pointer == NULL) ? pointer = file : pointer++;
+	pointer = strrchr(file, '\\');
+	(pointer == NULL) ? pointer = file : pointer++;
 	//remove prefix text from name of file
 	pointer2 = strstr(pointer, PARSE_EXTENSIONS);
 	if(pointer != pointer2)
@@ -151,7 +150,6 @@ void unpack(const char *file, const char *out_dir)
 		}
 		
 		fclose(ofd);
-		printf("File %s unpacked\n", out_name);
 		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
 	
@@ -167,7 +165,6 @@ void unpack(const char *file, const char *out_dir)
 	while((len = fread(data, 1, MAXSIZE, ifd)) > 0)
 		fwrite(data, 1, len, ofd);
 	fclose(ofd);
-	printf("File %s created\n", out_name);
 
 	fclose(ifd);
 	free(data);
