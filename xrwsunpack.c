@@ -15,6 +15,7 @@
 #define CONTENT_XML "content.xml"
 #define PARSE_DAT ".dat"
 #define PARSE_EXTENSIONS "extensions_"
+#define PARSE_EXTENSIONS_LEN 11
 #define PARSE_VERSION 'v'
 #define PARSE_VERSION_TOKEN '_'
 #define PARSE_WARNING "\nDont change file name after downloading from Steam"
@@ -62,38 +63,38 @@ void unpack(const char *file, const char *out_dir)
 		unsigned int files_size;
 	} header;
 	unsigned int *files_sizes, files_names_pos;
-	char *files_names, *data, *name_start, *name_end;
+	char *files_names, *data, *pointer, *pointer2;
 	unsigned long read_size, len;
-	char out_path[FILENAME_MAX*2], out_path2[FILENAME_MAX*2];
+	char out_name[FILENAME_MAX*2], out_path[FILENAME_MAX*2];
 	
 	//check output directory
 	if(*out_dir != '\0' && access(out_dir, W_OK) == -1)
 		terminate("No access to directory %s", out_dir);
 
 	//remove prefix path from name of file
-	name_start = strrchr(file, '/') + 1;
-printf("name_start %s\n", name_start);
+	pointer = strrchr(file, '/') + 1;
+printf("pointer %s\n", pointer);
 	//remove prefix text from name of file
-	name_end = strstr(name_start, PARSE_EXTENSIONS);
-printf("name_end %s\n", name_end);
-	if(name_end != name_start)
+	pointer2 = strstr(pointer, PARSE_EXTENSIONS);
+printf("pointer2 %s\n", pointer2);
+	if(pointer != pointer2)
 		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
-	name_start += sizeof(PARSE_EXTENSIONS) - 1;
-printf("name_start %s\n", name_start);
+	pointer2 += PARSE_EXTENSIONS_LEN;
+printf("pointer2 %s\n", pointer2);
 	//remove extention and check it
-	name_end = strrchr(name_start, '.');
-printf("name_end %s\n", name_end);
-	if(name_end == NULL || strcmp(name_end, PARSE_DAT) != 0)
+	pointer = strrchr(pointer2, '.');
+printf("pointer %s\n", pointer);
+	if(pointer == NULL || strcmp(pointer, PARSE_DAT) != 0)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
-	strncpy(out_path, name_start, name_end - name_start - 1);
-printf("out_path %s\n", out_path);
+	strncpy(out_name, pointer2, pointer - pointer2);
+printf("out_name %s\n", out_name);
 	//remove version from name of file
-	name_end = strrchr(out_path, PARSE_VERSION_TOKEN);
-printf("name_end %s\n", name_end);
-	if(name_end == NULL || name_end[1] != PARSE_VERSION)
+	pointer = strrchr(out_name, PARSE_VERSION_TOKEN);
+printf("pointer %s\n", pointer);
+	if(pointer == NULL || pointer[1] != PARSE_VERSION)
 		terminate("Name of file %s must contain version number%s", file, PARSE_WARNING);
-	strncpy(out_path2, out_path, name_end - out_path - 1);
-printf("out_path2 %s\n", out_path2);
+	pointer[0] = '\0';
+printf("out_name %s\n", out_name);
 
 	//open XRWS file for reading
 	ifd = fopen(file, "rb");
@@ -127,9 +128,9 @@ printf("out_path2 %s\n", out_path2);
 	
 	//create extention subdirectory
 	if(*out_dir != '\0')
-		sprintf(out_path, "%s/%s", out_dir, out_path2);
+		snprintf(out_path, sizeof(out_path), "%s/%s", out_dir, out_name);
 	else
-		strcpy(out_path, out_path2);
+		strcpy(out_path, out_name);
 	if(MAKEDIR(out_path) == 0)
 		printf("Create directory %s\n", out_path);
 	else
@@ -140,10 +141,10 @@ printf("out_path2 %s\n", out_path2);
 	files_names_pos = 0;
 	for(unsigned long counter = 0; counter < header.files_number; counter++)
 	{
-		sprintf(out_path2, "%s/%s", out_path, files_names + files_names_pos);
-		ofd = fopen(out_path2, "wb");
+		snprintf(out_name, sizeof(out_name), "%s/%s", out_path, files_names + files_names_pos);
+		ofd = fopen(out_name, "wb");
 		if(ofd == NULL)
-			terminate("Cannot create file %s", out_path2);
+			terminate("Cannot create file %s", out_name);
 
 		while((read_size = (files_sizes[counter] - ftell(ofd) > MAXSIZE) ? MAXSIZE : (files_sizes[counter] - ftell(ofd))) > 0)
 		{
@@ -152,7 +153,7 @@ printf("out_path2 %s\n", out_path2);
 		}
 		
 		fclose(ofd);
-		printf("File %s unpacked\n", out_path2);
+		printf("File %s unpacked\n", out_name);
 		files_names_pos += strlen(files_names + files_names_pos) + 1;
 	}
 	
@@ -161,14 +162,14 @@ printf("out_path2 %s\n", out_path2);
 		terminate("File %s corrupted", file);
 	
 	//create content.xml
-	sprintf(out_path2, "%s/%s", out_path, CONTENT_XML);
-	ofd = fopen(out_path2, "wb");
+	snprintf(out_name, sizeof(out_name), "%s/%s", out_path, CONTENT_XML);
+	ofd = fopen(out_name, "wb");
 	if(ofd == NULL)
-		terminate("Cannot create file %s", out_path2);
+		terminate("Cannot create file %s", out_name);
 	while((len = fread(data, 1, MAXSIZE, ifd)) > 0)
 		fwrite(data, 1, len, ofd);
 	fclose(ofd);
-	printf("File %s created\n", out_path2);
+	printf("File %s created\n", out_name);
 
 	fclose(ifd);
 	free(data);
