@@ -177,7 +177,10 @@ int main(int argc, char **argv)
 		terminate("\nXRWS file not found");
 	}
 	
-	unpack(argv[1], (argc > 2) ? argv[2] : "");
+	if(strcmp(argv[1], "--help") == 0)
+		usage(argv);
+	else
+		unpack(argv[1], (argc > 2) ? argv[2] : "");
 
 	return 0;
 }
