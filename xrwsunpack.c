@@ -72,7 +72,11 @@ void unpack(const char *file, const char *out_dir)
 		terminate("No access to directory %s", out_dir);
 
 	//remove prefix path from name of file
-	pointer = strrchr(file, '/') + 1;
+	pointer = strrchr(file, '/');
+	if(pointer == NULL)
+		pointer = file;
+	else
+		pointer++;
 	//remove prefix text from name of file
 	pointer2 = strstr(pointer, PARSE_EXTENSIONS);
 	if(pointer != pointer2)
