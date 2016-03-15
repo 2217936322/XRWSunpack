@@ -74,7 +74,7 @@ void unpack(const char *file, const char *out_dir)
 	pointer = strrchr(file, '/');
 	(pointer == NULL) ? pointer = file : pointer++;
 	pointer2 = strrchr(pointer, '\\');
-	(pointer == NULL) ? pointer2 = pointer : pointer2++;
+	(pointer2 == NULL) ? pointer2 = pointer : pointer2++;
 	//remove prefix text from name of file
 	pointer = strstr(pointer2, PARSE_EXTENSIONS);
 	if(pointer != pointer2)
