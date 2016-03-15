@@ -158,7 +158,8 @@ printf("out_name %s\n", out_name);
 	}
 	
 	//check data size with header
-	if(ftell(ifd) != (header.files_size + sizeof(header) + sizeof(files_sizes) + header.files_names_len))
+printf("%u = %u + %u + %u + %u\n", ftell(ifd), sizeof(header), header.files_names_len, sizeof(files_sizes), header.files_size);
+	if(ftell(ifd) != (sizeof(header) + header.files_names_len + sizeof(files_sizes) + header.files_size))
 		terminate("File %s corrupted", file);
 	
 	//create content.xml
