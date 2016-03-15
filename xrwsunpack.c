@@ -87,6 +87,7 @@ printf("pointer %s\n", pointer);
 	if(pointer == NULL || strcmp(pointer, PARSE_DAT) != 0)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
 	strncpy(out_name, pointer2, pointer - pointer2);
+	out_name[pointer - pointer2] = '\0';
 printf("out_name %s\n", out_name);
 	//remove version from name of file
 	pointer = strrchr(out_name, PARSE_VERSION_TOKEN);
@@ -158,8 +159,7 @@ printf("out_name %s\n", out_name);
 	}
 	
 	//check data size with header
-printf("%u = %u + %u + %u + %u\n", ftell(ifd), sizeof(header), header.files_names_len, sizeof(files_sizes), header.files_size);
-	if(ftell(ifd) != (sizeof(header) + header.files_names_len + sizeof(files_sizes) + header.files_size))
+	if(ftell(ifd) != (sizeof(header) + header.files_names_len + (header.files_number * 4) + header.files_size))
 		terminate("File %s corrupted", file);
 	
 	//create content.xml
