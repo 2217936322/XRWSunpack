@@ -73,19 +73,19 @@ void unpack(const char *file, const char *out_dir)
 	//remove prefix path from name of file
 	pointer = strrchr(file, '/');
 	(pointer == NULL) ? pointer = file : pointer++;
-	pointer = strrchr(file, '\\');
-	(pointer == NULL) ? pointer = file : pointer++;
+	pointer2 = strrchr(pointer, '\\');
+	(pointer == NULL) ? pointer2 = pointer : pointer2++;
 	//remove prefix text from name of file
-	pointer2 = strstr(pointer, PARSE_EXTENSIONS);
+	pointer = strstr(pointer2, PARSE_EXTENSIONS);
 	if(pointer != pointer2)
 		terminate("Name of file %s must begin with \"%s\"%s", file, PARSE_EXTENSIONS, PARSE_WARNING);
-	pointer2 += PARSE_EXTENSIONS_LEN;
+	pointer += PARSE_EXTENSIONS_LEN;
 	//remove extention and check it
-	pointer = strrchr(pointer2, '.');
-	if(pointer == NULL || strcmp(pointer, PARSE_DAT) != 0)
+	pointer2 = strrchr(pointer, '.');
+	if(pointer2 == NULL || strcmp(pointer2, PARSE_DAT) != 0)
 		terminate("Extension of file %s must be \"%s\"%s", file, PARSE_DAT, PARSE_WARNING);
-	strncpy(out_name, pointer2, pointer - pointer2);
-	out_name[pointer - pointer2] = '\0';
+	strncpy(out_name, pointer, pointer2 - pointer);
+	out_name[pointer2 - pointer] = '\0';
 	//remove version from name of file
 	pointer = strrchr(out_name, PARSE_VERSION_TOKEN);
 	if(pointer == NULL || pointer[1] != PARSE_VERSION)
