@@ -11,7 +11,7 @@ install: make
 before_script: mkdir extensions
 
 script:
-  - ./xrwsunpack || true
+  - ./xrwsunpack --help
   - ./xrwsunpack ./test-env/extensions_nidaren_titurel_engine_fix_v107.dat
   - diff ./nidaren_titurel_engine_fix/content.xml ./test-env/content.xml
   - diff ./nidaren_titurel_engine_fix/ext_01.cat ./test-env/ext_01.cat
